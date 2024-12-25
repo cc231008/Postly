@@ -5,6 +5,7 @@ import edu.cc231008.postly.data.db.PostEntity
 import kotlinx.coroutines.flow.map
 
 class PostRepository(private val postDao: PostDAO) {
+    // variable that holds a list of all posts
     val posts = postDao.getAllPosts()
         .map { postList ->
             postList.map { entity ->
@@ -20,6 +21,4 @@ class PostRepository(private val postDao: PostDAO) {
     suspend fun addPost(image: String, description: String) {
         postDao.addPost(PostEntity(0, image, description))
     }
-
-
 }

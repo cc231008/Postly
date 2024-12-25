@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+//the PostDetailViewModel is responsible for managing, saving, and updating the UI state.
 class PostDetailViewModel(
     private val savedStateHandle: SavedStateHandle, // Provides a way to retrieve and save state information
     private val repository: PostRepository
@@ -19,7 +20,7 @@ class PostDetailViewModel(
 
     private val _postDetailUiState = MutableStateFlow(
         PostDetailUiState(
-            PostTemplate(0, "", "") // Default empty post
+            PostTemplate(0, "", "")
         )
     )
 
