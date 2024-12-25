@@ -15,10 +15,17 @@ abstract class PostDatabase: RoomDatabase() {
         private var Instance: PostDatabase? = null
 
         fun getDatabase(context: Context): PostDatabase {
-            // if the Instance is not null, return it, otherwise create a new database instance to ensure thread safety.
+
+            // The code part below ensures that only one thread is created for instance.
+            // If Instance already exists, it is returned immediately, avoiding any unnecessary object creation.
+            // If Instance is null, the code inside the synchronized block is executed to create a new instance.
             return Instance ?: synchronized(this) {
-                //This creates a new database instance using the Room database builder.
-                val instance = Room.databaseBuilder(context, PostDatabase::class.java, "contact_database")
+                //This part ensures the database is created correctly with the schema defined in the PostDatabase class.
+                val instance = Room.databaseBuilder(
+                    context,
+                    PostDatabase::class.java, //class serves as the blueprint for the database schema.
+                    "contact_database"
+                )
                     /**
                      * Setting this option in your app's database builder means that Room
                      * permanently deletes all data from the tables in your database when it
@@ -26,9 +33,10 @@ abstract class PostDatabase: RoomDatabase() {
                      * "migration" - refers to the process of updating the database schema to a new version.
                      * That is why we defined version (version = 1)
                      */
-                    .fallbackToDestructiveMigration()
-                    .build()
-                Instance = instance
+                    //Warning: In production, this leads to data loss, so you should replace this with proper migration strategies!
+                    .fallbackToDestructiveMigration() //This part will attempt to migrate the database, if the database schema is updated.
+                    .build() //This method finalizes the creation of the database instance.
+                Instance = instance //The newly created database instance is assigned to the Instance variable.
                 return instance
             }
         }

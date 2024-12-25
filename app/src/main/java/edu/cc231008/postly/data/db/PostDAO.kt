@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
+//We use dao to control the database by fetching, inserting, updating or deleting data.
 @Dao
 interface PostDAO {
     @Query("SELECT * FROM posts")
