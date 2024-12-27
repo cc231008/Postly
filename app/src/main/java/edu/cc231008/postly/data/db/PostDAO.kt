@@ -3,6 +3,7 @@ package edu.cc231008.postly.data.db
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 //We use dao to control the database by fetching, inserting, updating or deleting data.
@@ -17,4 +18,6 @@ interface PostDAO {
     @Insert
     suspend fun addPost(postEntity: PostEntity)
 
+    @Update
+    suspend fun editPost()
 }

@@ -26,25 +26,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.rememberAsyncImagePainter
 import edu.cc231008.postly.data.repo.PostTemplate
 
 enum class Routes(val route: String) {
     Main("main"),
-    Insert("insert")
+    Insert("insert"),
+    Edit("edit/{postId}")
 }
 
 @Composable
 fun PostUI(
     navController: NavHostController = rememberNavController(),
-    postViewModel: PostViewModel = viewModel(factory = AppViewModelProvider.Factory)
            ) {
-
-    val state by postViewModel.postUiState.collectAsStateWithLifecycle()
-
     NavHost(
         navController = navController,
         startDestination = Routes.Main.route
@@ -57,16 +56,35 @@ fun PostUI(
                 ) {
                     Text("Add Post")
                 }
-                LazyColumn {
-                    itemsIndexed(state) { index, posts ->
-                        ListOfPosts(posts)
-                    }
-                }
+                ListOfPosts { postId -> navController.navigate("edit/$postId")}
             }
         }
         composable(Routes.Insert.route) {
             AddPost(
                 onAddPost = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.Edit.route, listOf(navArgument("postId"){
+            type = NavType.IntType
+        })) {
+            PostEdit()
+        }
+    }
+}
+
+@Composable
+fun ListOfPosts(
+    postViewModel: PostViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onPostClick: (Int) -> Unit
+) {
+
+    val state by postViewModel.postUiState.collectAsStateWithLifecycle()
+
+    LazyColumn {
+        itemsIndexed(state) { index, post ->
+            OnePost(
+                post,
+                onCardClick = { onPostClick(post.id)}
             )
         }
     }
@@ -113,8 +131,6 @@ fun AddPost(
             Text("Submit Input")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
     }
 }
 
@@ -156,8 +172,14 @@ fun DisplayDescription(description: String) {
 }
 
 @Composable
-fun ListOfPosts(posts: PostTemplate, modifier: Modifier = Modifier) {
-    OutlinedCard(modifier = modifier
+fun OnePost(
+    posts: PostTemplate,
+    onCardClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        onClick = { onCardClick() },
+        modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)) {
         Column(Modifier.padding(16.dp)) {
@@ -165,4 +187,33 @@ fun ListOfPosts(posts: PostTemplate, modifier: Modifier = Modifier) {
             DisplayDescription(posts.description)
         }
     }
+}
+
+@Composable
+fun PostEdit(
+    postDetailViewModel: PostDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
+) {
+
+    val state = postDetailViewModel.postDetailUiState.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        InputField(
+            value = state.value.post.image,
+            onValueChange = { state.value.post.image = it },
+            label = "Image URL"
+        )
+        InputField(
+            value = state.value.post.description,
+            onValueChange = { state.value.post.description = it },
+            label = "Description"
+        )
+    }
+
+
 }
