@@ -3,6 +3,7 @@ package edu.cc231008.postly.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import edu.cc231008.postly.data.db.PostEntity
 import edu.cc231008.postly.data.repo.PostRepository
 import edu.cc231008.postly.data.repo.PostTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,4 +37,11 @@ class PostDetailViewModel(
             }
         }
     }
+
+    fun onEditButtonClicked(post: PostTemplate) {
+        viewModelScope.launch {
+            repository.editPost(PostEntity(_id = post.id, image = post.image, description = post.description))
+        }
+    }
+
 }

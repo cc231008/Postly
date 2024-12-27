@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,10 +65,14 @@ fun PostUI(
                 onAddPost = { navController.popBackStack() }
             )
         }
-        composable(Routes.Edit.route, listOf(navArgument("postId"){
-            type = NavType.IntType
-        })) {
-            PostEdit()
+        composable(
+            Routes.Edit.route,
+            listOf(navArgument("postId")
+            { type = NavType.IntType }
+            )) {
+            EditPost(
+                onEditPost = { navController.popBackStack() }
+            )
         }
     }
 }
@@ -190,12 +195,23 @@ fun OnePost(
 }
 
 @Composable
-fun PostEdit(
-    postDetailViewModel: PostDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
+fun EditPost(
+    postDetailViewModel: PostDetailViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onEditPost: () -> Unit
 ) {
+    var imageUrl by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
 
     val state = postDetailViewModel.postDetailUiState.collectAsStateWithLifecycle()
+
+    val postId = state.value.post.id
+    val postImageData = state.value.post.image
+    val postDescriptionData = state.value.post.description
+
+    LaunchedEffect(postId) {
+            imageUrl = postImageData
+            description = postDescriptionData
+    }
 
     Column(
         modifier = Modifier
@@ -204,16 +220,28 @@ fun PostEdit(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         InputField(
-            value = state.value.post.image,
-            onValueChange = { state.value.post.image = it },
+            value = imageUrl,
+            onValueChange = { imageUrl = it },
             label = "Image URL"
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         InputField(
-            value = state.value.post.description,
-            onValueChange = { state.value.post.description = it },
+            value = description,
+            onValueChange = { description = it },
             label = "Description"
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        onClick = {
+            postDetailViewModel.onEditButtonClicked(PostTemplate(id = postId, image = imageUrl, description = description))
+            onEditPost()
+        }
+    ) {
+        Text("Edit Data")
     }
-
-
+    }
 }

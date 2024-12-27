@@ -21,4 +21,8 @@ class PostRepository(private val postDao: PostDAO) {
     suspend fun addPost(image: String, description: String) {
         postDao.addPost(PostEntity(0, image, description))
     }
+
+    suspend fun editPost(postEntity: PostEntity) {
+        postDao.editPost(postEntity)
+    }
 }

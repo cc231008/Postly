@@ -19,5 +19,5 @@ interface PostDAO {
     suspend fun addPost(postEntity: PostEntity)
 
     @Update
-    suspend fun editPost()
+    suspend fun editPost(postEntity: PostEntity)
 }

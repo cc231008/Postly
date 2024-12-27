@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import edu.cc231008.postly.data.db.PostEntity
 import edu.cc231008.postly.data.repo.PostRepository
 import edu.cc231008.postly.data.repo.PostTemplate
 import kotlinx.coroutines.flow.SharingStarted
