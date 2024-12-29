@@ -8,5 +8,6 @@ data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
     val image: String,
-    val description: String
+    val description: String,
+    val createdAt: Long,
 )

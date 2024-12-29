@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 //the PostDetailViewModel is responsible for managing, saving, and updating the UI state.
 class PostDetailViewModel(
@@ -18,10 +21,9 @@ class PostDetailViewModel(
 ) : ViewModel() {
 
     private val postId: Int = savedStateHandle["postId"] ?: 0 // Retrieves postId, when the path is "detail/$postId"
-
     private val _postDetailUiState = MutableStateFlow(
         PostDetailUiState(
-            PostTemplate(0, "", "")
+            PostTemplate(0, "", "", System.currentTimeMillis())
         )
     )
 
@@ -40,7 +42,12 @@ class PostDetailViewModel(
 
     fun onEditButtonClicked(post: PostTemplate) {
         viewModelScope.launch {
-            repository.editPost(PostEntity(_id = post.id, image = post.image, description = post.description))
+            repository.editPost(PostEntity(
+                _id = post.id,
+                image = post.image,
+                description = post.description,
+                createdAt = post.createdAt,
+            ))
         }
     }
 

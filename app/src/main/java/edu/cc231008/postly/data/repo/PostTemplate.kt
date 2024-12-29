@@ -4,5 +4,6 @@ package edu.cc231008.postly.data.repo
 data class PostTemplate(
     val id: Int = 0,
     var image: String,
-    var description: String
+    var description: String,
+    val createdAt: Long,
 )

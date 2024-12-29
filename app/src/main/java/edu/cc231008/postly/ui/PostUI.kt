@@ -34,6 +34,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.compose.rememberAsyncImagePainter
 import edu.cc231008.postly.data.repo.PostTemplate
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 enum class Routes(val route: String) {
     Main("main"),
@@ -182,12 +185,14 @@ fun OnePost(
     onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val createdAt = formatTimestamp(posts.createdAt)
     OutlinedCard(
         onClick = { onCardClick() },
         modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)) {
         Column(Modifier.padding(16.dp)) {
+            Text(createdAt)
             DisplayImage(posts.image)
             DisplayDescription(posts.description)
         }
@@ -202,15 +207,12 @@ fun EditPost(
     var imageUrl by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
+
     val state = postDetailViewModel.postDetailUiState.collectAsStateWithLifecycle()
 
-    val postId = state.value.post.id
-    val postImageData = state.value.post.image
-    val postDescriptionData = state.value.post.description
-
-    LaunchedEffect(postId) {
-            imageUrl = postImageData
-            description = postDescriptionData
+    LaunchedEffect(state.value.post.id) {
+            imageUrl = state.value.post.image
+            description = state.value.post.description
     }
 
     Column(
@@ -237,11 +239,23 @@ fun EditPost(
 
     Button(
         onClick = {
-            postDetailViewModel.onEditButtonClicked(PostTemplate(id = postId, image = imageUrl, description = description))
+            postDetailViewModel.onEditButtonClicked(PostTemplate(
+                id = state.value.post.id,
+                image = imageUrl,
+                description = description,
+                createdAt = state.value.post.createdAt,
+                ))
             onEditPost()
         }
     ) {
         Text("Edit Data")
     }
     }
+}
+
+fun formatTimestamp(timestamp: Long): String {
+    val instant = Instant.ofEpochMilli(timestamp)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        .withZone(ZoneId.systemDefault())
+    return formatter.format(instant)
 }
