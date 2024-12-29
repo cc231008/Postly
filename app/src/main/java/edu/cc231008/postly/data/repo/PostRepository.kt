@@ -14,16 +14,20 @@ class PostRepository(private val postDao: PostDAO) {
             }
         }
 
+    //This function helps to find a post by its id.
     suspend fun findPostById(postId: Int): PostTemplate {
         val postEntity = postDao.findPostById(postId)
         return (PostTemplate(postEntity._id, postEntity.image, postEntity.description, postEntity.createdAt))
     }
 
+    //Function for adding posts.
     suspend fun addPost(image: String, description: String) {
+        //currentTime is a variable that holds time when post is created or when addPost function is used.
         val currentTime = System.currentTimeMillis()
         postDao.addPost(PostEntity(0, image, description, currentTime))
     }
 
+    //Function for editing or updating data of a post.
     suspend fun editPost(postEntity: PostEntity) {
         postDao.editPost(postEntity)
     }

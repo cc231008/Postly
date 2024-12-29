@@ -201,14 +201,14 @@ fun OnePost(
 
 @Composable
 fun EditPost(
-    postDetailViewModel: PostDetailViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    postStateViewModel: PostStateViewModel = viewModel(factory = AppViewModelProvider.Factory),
     onEditPost: () -> Unit
 ) {
     var imageUrl by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
 
-    val state = postDetailViewModel.postDetailUiState.collectAsStateWithLifecycle()
+    val state = postStateViewModel.postUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.value.post.id) {
             imageUrl = state.value.post.image
@@ -239,7 +239,7 @@ fun EditPost(
 
     Button(
         onClick = {
-            postDetailViewModel.onEditButtonClicked(PostTemplate(
+            postStateViewModel.onEditButtonClicked(PostTemplate(
                 id = state.value.post.id,
                 image = imageUrl,
                 description = description,

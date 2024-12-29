@@ -9,5 +9,5 @@ data class PostEntity(
     val _id: Int = 0,
     val image: String,
     val description: String,
-    val createdAt: Long,
+    val createdAt: Long, //Shows time when post is created.
 )

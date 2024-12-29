@@ -33,7 +33,6 @@ abstract class PostDatabase: RoomDatabase() {
                      * "migration" - refers to the process of updating the database schema to a new version.
                      * That is why we defined version (version = 1)
                      */
-                    //Warning: In production, this leads to data loss, so you should replace this with proper migration strategies!
                     .fallbackToDestructiveMigration() //This part will attempt to migrate the database, if the database schema is updated.
                     .build() //This method finalizes the creation of the database instance.
                 Instance = instance //The newly created database instance is assigned to the Instance variable.
