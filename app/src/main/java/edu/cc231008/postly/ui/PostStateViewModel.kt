@@ -37,7 +37,7 @@ class PostStateViewModel(
         }
     }
 
-    fun onEditButtonClicked(post: PostTemplate) {
+    fun onEditButtonClick(post: PostTemplate) {
         viewModelScope.launch {
             repository.editPost(PostEntity(
                 _id = post.id,
@@ -48,4 +48,14 @@ class PostStateViewModel(
         }
     }
 
+    fun onDeleteButtonClick(post: PostTemplate) {
+     viewModelScope.launch {
+         repository.deletePost(PostEntity(
+             _id = post.id,
+             image = post.image,
+             description = post.description,
+             createdAt = post.createdAt,
+         ))
+     }
+    }
 }

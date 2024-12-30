@@ -17,7 +17,7 @@ object AppViewModelProvider {
 
         initializer {
             val postApplication = this[APPLICATION_KEY] as PostApplication
-            PostDetailViewModel(
+            PostStateViewModel(
                 this.createSavedStateHandle(),
                 postApplication.postRepository
             )

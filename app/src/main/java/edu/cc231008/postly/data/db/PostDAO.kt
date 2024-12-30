@@ -1,6 +1,7 @@
 package edu.cc231008.postly.data.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -20,4 +21,7 @@ interface PostDAO {
 
     @Update
     suspend fun editPost(postEntity: PostEntity)
+
+    @Delete
+    suspend fun deletePost(postEntity: PostEntity)
 }

@@ -31,4 +31,8 @@ class PostRepository(private val postDao: PostDAO) {
     suspend fun editPost(postEntity: PostEntity) {
         postDao.editPost(postEntity)
     }
+    //Function for deleting data of a post.
+    suspend fun deletePost(postEntity: PostEntity) {
+        postDao.deletePost(postEntity)
+    }
 }

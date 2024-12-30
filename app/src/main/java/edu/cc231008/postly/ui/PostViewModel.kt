@@ -19,7 +19,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         emptyList()
     )
 
-    fun onAddButtonClicked(image: String, description: String) {
+    fun onAddButtonClick(image: String, description: String) {
         viewModelScope.launch {
             repository.addPost(image, description)
         }
