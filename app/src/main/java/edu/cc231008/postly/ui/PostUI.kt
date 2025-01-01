@@ -2,7 +2,6 @@ package edu.cc231008.postly.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,19 +17,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,10 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -77,25 +74,35 @@ fun PostUI(
         topBar = {
             // TopAppBar to display title and the "Add" button
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
                 title = {
                     Text(
                         text = "Postly",
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.Bold, // Bold for emphasis
-                            fontSize = 20.sp, // Customize the font size as needed
+                        style = MaterialTheme.typography.titleLarge
+
                         )
-                    )
                 },
                 actions = {
                     //This button will navigate user to the screen where he can add a post.
                     IconButton(
                         onClick = { navController.navigate(Routes.Insert.route) }
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add Post",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                        Column {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add Post",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+
+                            Text(
+                                text = "Add",
+                                style = MaterialTheme.typography.bodySmall, // Adjust font size
+                                color = MaterialTheme.colorScheme.onSurfaceVariant // Match color with the design
+                            )
+                        }
                     }
                 }
             )
@@ -190,14 +197,21 @@ fun PostCard(
                 IconButton(
                     onClick = { onEditClick() },
                     modifier = Modifier
-                        .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.small)
-                        .clip(MaterialTheme.shapes.small)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Post",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally // Aligns icon and label centrally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Post",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Edit",
+                            style = MaterialTheme.typography.bodySmall, // Adjust font size
+                            color = MaterialTheme.colorScheme.onSurfaceVariant // Match color with the design
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -325,10 +339,44 @@ fun EditPostScreen(
 fun DeletePostButton(
     onDeleteClick: () -> Unit
 ) {
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
     Button(
-        onClick = { onDeleteClick() }
+        onClick = { showConfirmationDialog = true },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Red, // Background color
+            contentColor = Color.White  // Text color
+        )
     ) {
         Text("Delete")
+    }
+
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog = false },
+            title = { Text(text = "Confirm Deletion") },
+            text = { Text("Are you sure you want to delete this post? This action cannot be undone.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showConfirmationDialog = false
+                        onDeleteClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red, // Background color
+                        contentColor = Color.White  // Text color
+                )
+                ) {
+                    Text("Yes, Delete")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showConfirmationDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            })
     }
 }
 
@@ -382,7 +430,7 @@ fun DisplayImage(url: String) {
 @Composable
 fun DisplayDescription(description: String) {
     Text(
-        text = description,
+        text = "Description: $description",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.padding(top = 8.dp)
