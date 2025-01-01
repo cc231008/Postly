@@ -2,6 +2,7 @@ package edu.cc231008.postly.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,7 +70,6 @@ enum class Routes(val route: String) {
 fun PostUI(
     navController: NavHostController = rememberNavController(),
            ) {
-
     Scaffold(
         topBar = {
             // TopAppBar to display title and the "Add" button
@@ -79,11 +79,16 @@ fun PostUI(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text(
-                        text = "Postly",
-                        style = MaterialTheme.typography.titleLarge
-
+                    Box(
+                        modifier = Modifier
+                            .clickable { navController.navigate(Routes.Main.route) } // Navigate to main page
+                            .padding(8.dp) // Optional padding for touch feedback
+                    ) {
+                        Text(
+                            text = "Postly",
+                            style = MaterialTheme.typography.titleLarge
                         )
+                    }
                 },
                 actions = {
                     //This button will navigate user to the screen where he can add a post.
